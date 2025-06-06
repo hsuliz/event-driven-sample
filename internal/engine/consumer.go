@@ -47,7 +47,7 @@ func (c Consumer) Consume() {
 	for message := range partitionConsumer.Messages() {
 		var matrix [][]int
 		if err := json.Unmarshal(message.Value, &matrix); err != nil {
-			log.Fatalf("Failed to start Kafka consumer: %v", err)
+			log.Fatalf("failed to start Kafka consumer: %v", err)
 		}
 		log.Println(c.Service.CalculateDeterminant(matrix))
 	}
