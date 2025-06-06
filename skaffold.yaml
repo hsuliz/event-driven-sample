@@ -1,0 +1,31 @@
+apiVersion: skaffold/v4beta13
+kind: Config
+metadata:
+  name: event-driven-sample
+build:
+  artifacts:
+    - image: hsuliz/event-driven-sample/engine-service
+      docker:
+        dockerfile: cmd/engine/Dockerfile
+    - image: hsuliz/event-driven-sample/order-service
+      docker:
+        dockerfile: cmd/order/Dockerfile
+deploy:
+  helm:
+    releases:
+      - name: kafka
+        remoteChart: bitnami/kafka
+        version: 32.2.11
+        setValues:
+          zookeeper.enabled: true
+          listeners.client.protocol: PLAINTEXT
+          provisioning:
+            enabled: true
+            topics:
+              - name: test-topic
+                partitions: 1
+                replicationFactor: 1
+manifests:
+  rawYaml:
+    - cmd/engine/k8s.yaml
+    - cmd/order/k8s.yaml

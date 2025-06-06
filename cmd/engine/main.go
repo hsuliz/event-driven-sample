@@ -9,6 +9,10 @@ func main() {
 	service := engine.NewService()
 
 	kafkaConfig := config.GetKafkaConfig()
-	handler := engine.NewConsumer(service, kafkaConfig.Brokers, kafkaConfig.Topic)
+	handler := engine.NewConsumer(
+		service,
+		kafkaConfig.Brokers,
+		kafkaConfig.Topic,
+	)
 	handler.Consume()
 }

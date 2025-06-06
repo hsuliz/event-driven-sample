@@ -17,5 +17,4 @@ func main() {
 		kafkaConfig.Topic,
 	)
 	log.Fatalln(producer.Produce(matrixN))
-
 }

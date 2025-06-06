@@ -7,7 +7,7 @@ type KafkaConfig struct {
 
 func GetKafkaConfig() KafkaConfig {
 	return KafkaConfig{
-		Brokers: []string{"localhost:29092"},
+		Brokers: []string{"kafka:9092"},
 		Topic:   "test-topic",
 	}
 }
