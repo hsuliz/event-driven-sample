@@ -29,7 +29,7 @@ func (c Consumer) Consume() {
 
 	consumer, err := sarama.NewConsumer(c.Brokers, config)
 	if err != nil {
-		log.Fatalf("Failed to start Kafka consumer: %v", err)
+		log.Fatalf("failed to start Kafka consumer: %v", err)
 	}
 	defer consumer.Close()
 
@@ -39,7 +39,7 @@ func (c Consumer) Consume() {
 		sarama.OffsetNewest,
 	)
 	if err != nil {
-		log.Fatalf("Failed to start partition consumer: %v", err)
+		log.Fatalf("failed to start partition consumer: %v", err)
 	}
 	defer partitionConsumer.Close()
 
