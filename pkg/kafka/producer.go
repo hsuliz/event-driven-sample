@@ -26,12 +26,12 @@ func NewProducer(brokers []string, topic string) (*Producer, error) {
 	}, nil
 }
 
-func (p Producer) SendMessage(message string) error {
-	msg := &sarama.ProducerMessage{
+func (p Producer) SendMessage(message []byte) error {
+	producerMessage := &sarama.ProducerMessage{
 		Topic: p.Topic,
-		Value: sarama.StringEncoder(message),
+		Value: sarama.ByteEncoder(message),
 	}
-	if _, _, err := p.SaramaSyncProducer.SendMessage(msg); err != nil {
+	if _, _, err := p.SaramaSyncProducer.SendMessage(producerMessage); err != nil {
 		return fmt.Errorf("failed to setup producer: %w", err)
 	}
 	return nil

@@ -28,11 +28,14 @@ func (c Consumer) Listen() error {
 			log.Printf("failed to unmarshal message: %v", err)
 			continue
 		}
-		determinant := c.Service.Calculate(matrix)
+		determinant, err := c.Service.Calculate(matrix)
+		if err != nil {
+			log.Printf("failed to calculate message: %v", err)
+			continue
+		}
 		// mock intense work
 		time.Sleep(time.Second / 5)
-
-		if err := c.Service.Save(determinant); err != nil {
+		if err := c.Service.Process(determinant); err != nil {
 			return err
 		}
 	}

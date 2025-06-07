@@ -27,7 +27,7 @@ func (p Producer) Produce(matrix int) error {
 		if err != nil {
 			log.Fatal(err)
 		}
-		if err := p.KafkaProducer.SendMessage(string(data)); err != nil {
+		if err := p.KafkaProducer.SendMessage(data); err != nil {
 			return err
 		}
 		log.Println("produced")

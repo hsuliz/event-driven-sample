@@ -3,7 +3,6 @@ package engine
 import (
 	"encoding/json"
 	"event-driven-sample/pkg/kafka"
-	"log"
 )
 
 type Producer struct {
@@ -24,12 +23,12 @@ func NewProducer(brokers []string, topic string) (*Producer, error) {
 	}, nil
 }
 
-func (p Producer) SendMessage(determinant int) error {
-	data, err := json.Marshal(determinant)
+func (p Producer) SendMessage(message kafka.EngineMessage) error {
+	data, err := json.Marshal(message)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
-	if err := p.KafkaProducer.SendMessage(string(data)); err != nil {
+	if err := p.KafkaProducer.SendMessage(data); err != nil {
 		return err
 	}
 	return nil
