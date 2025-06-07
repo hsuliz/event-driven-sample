@@ -23,7 +23,6 @@ func (s Service) GenerateMatrix(size int) [][]int {
 		}()
 	}
 	wg.Wait()
-
 	return matrix
 }
 

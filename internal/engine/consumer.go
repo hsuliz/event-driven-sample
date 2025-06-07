@@ -2,53 +2,43 @@ package engine
 
 import (
 	"encoding/json"
-	"github.com/IBM/sarama"
+	"event-driven-sample/internal/kafka"
 	"log"
+	"time"
 )
 
 type Consumer struct {
-	Service *Service
-	Brokers []string
-	Topic   string
+	Service       *Service
+	KafkaConsumer *kafka.Consumer
 }
 
-func NewConsumer(
-	service *Service,
-	brokers []string,
-	topic string,
-) *Consumer {
-	return &Consumer{
-		service,
-		brokers,
-		topic,
+func NewConsumer(service *Service, brokers []string, topic string) (*Consumer, error) {
+	client, err := kafka.NewConsumer(brokers, topic)
+	if err != nil {
+		return nil, err
 	}
+	return &Consumer{service, client}, nil
 }
 
-func (c Consumer) Consume() {
-	config := sarama.NewConfig()
-
-	consumer, err := sarama.NewConsumer(c.Brokers, config)
-	if err != nil {
-		log.Fatalf("failed to start Kafka consumer: %v", err)
-	}
-	defer consumer.Close()
-
-	partitionConsumer, err := consumer.ConsumePartition(
-		c.Topic,
-		0,
-		sarama.OffsetNewest,
-	)
-	if err != nil {
-		log.Fatalf("failed to start partition consumer: %v", err)
-	}
-	defer partitionConsumer.Close()
-
-	log.Println("Listening for messages...")
-	for message := range partitionConsumer.Messages() {
+func (c Consumer) Listen() error {
+	log.Println("listening for messages...")
+	for message := range c.KafkaConsumer.Listen() {
 		var matrix [][]int
 		if err := json.Unmarshal(message.Value, &matrix); err != nil {
-			log.Fatalf("failed to start Kafka consumer: %v", err)
+			log.Printf("failed to unmarshal message: %v", err)
+			continue
 		}
-		log.Println(c.Service.CalculateDeterminant(matrix))
+		determinant := c.Service.Calculate(matrix)
+		// mock intense work
+		time.Sleep(time.Second / 5)
+
+		if err := c.Service.Save(determinant); err != nil {
+			return err
+		}
 	}
+	return nil
+}
+
+func (c Consumer) Close() {
+	c.KafkaConsumer.Close()
 }

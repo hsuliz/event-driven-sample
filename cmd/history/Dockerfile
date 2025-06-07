@@ -5,8 +5,8 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
-RUN CGO_ENABLED=0 go build -o engine ./cmd/engine
+RUN CGO_ENABLED=0 go build -o history ./cmd/history
 
 FROM gcr.io/distroless/static-debian12
 COPY --from=builder /app .
-ENTRYPOINT ["./engine"]
+ENTRYPOINT ["./history"]

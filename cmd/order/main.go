@@ -8,13 +8,11 @@ import (
 
 func main() {
 	service := order.NewService()
-
 	kafkaConfig := config.GetKafkaConfig()
-	matrixN := 3
-	producer := order.NewProducer(
-		service,
-		kafkaConfig.Brokers,
-		kafkaConfig.Topic,
-	)
-	log.Fatalln(producer.Produce(matrixN))
+	producer, err := order.NewProducer(service, kafkaConfig.Brokers, kafkaConfig.OrderTopic)
+	if err != nil {
+		log.Println(err)
+	}
+	n := 3
+	log.Fatalln(producer.Produce(n))
 }

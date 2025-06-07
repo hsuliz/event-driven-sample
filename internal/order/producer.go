@@ -2,56 +2,37 @@ package order
 
 import (
 	"encoding/json"
-	"fmt"
-	"github.com/IBM/sarama"
+	"event-driven-sample/internal/kafka"
 	"log"
+	"time"
 )
 
 type Producer struct {
-	Service *Service
-	Brokers []string
-	Topic   string
+	Service       *Service
+	KafkaProducer *kafka.Producer
 }
 
-func NewProducer(
-	service *Service,
-	brokers []string,
-	topic string,
-) *Producer {
-	return &Producer{
-		service,
-		brokers,
-		topic,
-	}
-}
-
-func (p Producer) Produce(matrixN int) error {
-	config := sarama.NewConfig()
-	config.Producer.Return.Successes = true
-	producer, err := sarama.NewSyncProducer(
-		p.Brokers,
-		config,
-	)
+func NewProducer(service *Service, brokers []string, topic string) (*Producer, error) {
+	client, err := kafka.NewProducer(brokers, topic)
 	if err != nil {
-		return fmt.Errorf("failed to setup producer: %w", err)
+		return nil, err
 	}
+	return &Producer{service, client}, nil
+}
 
+func (p Producer) Produce(matrix int) error {
 	for {
-		matrix := p.Service.GenerateMatrix(matrixN)
+		matrix := p.Service.GenerateMatrix(matrix)
 		data, err := json.Marshal(matrix)
 		if err != nil {
 			log.Fatal(err)
 		}
-
-		msg := &sarama.ProducerMessage{
-			Topic: p.Topic,
-			Value: sarama.StringEncoder(data),
+		if err := p.KafkaProducer.SendMessage(string(data)); err != nil {
+			return err
 		}
-
-		if _, _, err := producer.SendMessage(msg); err != nil {
-			return fmt.Errorf("failed to setup producer: %w", err)
-		}
+		log.Println("produced")
+		// based on kafka resources sleep can be removed
+		time.Sleep(time.Second)
 	}
-
 	return nil
 }

@@ -16,15 +16,8 @@ deploy:
       - name: kafka
         remoteChart: bitnami/kafka
         version: 32.2.11
-        setValues:
-          zookeeper.enabled: true
-          listeners.client.protocol: PLAINTEXT
-          provisioning:
-            enabled: true
-            topics:
-              - name: test-topic
-                partitions: 1
-                replicationFactor: 1
+        valuesFiles:
+          - infrastructure/values/kafka.yaml
 manifests:
   rawYaml:
     - cmd/engine/k8s.yaml

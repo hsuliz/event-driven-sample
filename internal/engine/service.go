@@ -2,19 +2,29 @@ package engine
 
 import (
 	"encoding/json"
+	"fmt"
 	"gonum.org/v1/gonum/mat"
 	"log"
 	"slices"
 )
 
 type Service struct {
+	Producer *Producer
 }
 
-func NewService() *Service {
-	return &Service{}
+func NewService(producer *Producer) *Service {
+	return &Service{producer}
 }
 
-func (s Service) CalculateDeterminant(matrix [][]int) float64 {
+func (s Service) Save(determinant int) error {
+	log.Println("saved", determinant)
+	if err := s.Producer.SendMessage(determinant); err != nil {
+		return fmt.Errorf("server failed to send message: %v", err)
+	}
+	return nil
+}
+
+func (s Service) Calculate(matrix [][]int) int {
 	flattenMatrixInt := slices.Concat(matrix...)
 
 	// START MONSTROSITY
@@ -30,5 +40,5 @@ func (s Service) CalculateDeterminant(matrix [][]int) float64 {
 
 	n := len(matrix)
 	det := mat.Det(mat.NewDense(n, n, flattenMatrixFloat))
-	return det
+	return int(det)
 }
