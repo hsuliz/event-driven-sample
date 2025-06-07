@@ -36,3 +36,7 @@ func (p Producer) Produce(matrix int) error {
 	}
 	return nil
 }
+
+func (p Producer) Close() {
+	p.KafkaProducer.Close()
+}

@@ -36,3 +36,7 @@ func (p Producer) SendMessage(message string) error {
 	}
 	return nil
 }
+
+func (p Producer) Close() {
+	p.SaramaSyncProducer.Close()
+}

@@ -34,3 +34,7 @@ func (p Producer) SendMessage(determinant int) error {
 	}
 	return nil
 }
+
+func (p Producer) Close() {
+	p.KafkaProducer.Close()
+}
