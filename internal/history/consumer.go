@@ -20,7 +20,6 @@ func NewConsumer(brokers []string, topic string) (*Consumer, error) {
 
 func (c Consumer) Listen() error {
 	log.Println("listening for messages...")
-	log.Println("listening for messages...")
 	for message := range c.KafkaConsumer.Listen() {
 		var determinant int
 		if err := json.Unmarshal(message.Value, &determinant); err != nil {
