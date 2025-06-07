@@ -17,7 +17,6 @@ func NewProducer(brokers []string, topic string) (*Producer, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	return &Producer{
 		brokers,
 		topic,
