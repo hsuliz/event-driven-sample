@@ -2,7 +2,7 @@ package engine
 
 import (
 	"encoding/json"
-	"event-driven-sample/internal/kafka"
+	"event-driven-sample/pkg/kafka"
 	"log"
 )
 
