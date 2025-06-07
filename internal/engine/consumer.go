@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"event-driven-sample/pkg/kafka"
 	"log"
+	"math/rand"
 	"time"
 )
 
@@ -33,8 +34,11 @@ func (c Consumer) Listen() error {
 			log.Printf("failed to calculate message: %v", err)
 			continue
 		}
+
 		// mock intense work
-		time.Sleep(time.Second / 5)
+		duration := rand.Intn(10)
+		time.Sleep(time.Duration(duration) * time.Second)
+
 		if err := c.Service.Process(determinant); err != nil {
 			return err
 		}
