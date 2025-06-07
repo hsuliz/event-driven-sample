@@ -1,6 +1,6 @@
 package kafka
 
-type EngineMessage struct {
+type EngineMsg struct {
 	Done  bool
 	Value int
 }

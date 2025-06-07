@@ -21,7 +21,7 @@ func NewConsumer(brokers []string, topic string) (*Consumer, error) {
 func (c Consumer) Listen() error {
 	log.Println("listening for messages...")
 	for msg := range c.KafkaConsumer.Listen() {
-		var engineMsg kafka.EngineMessage
+		var engineMsg kafka.EngineMsg
 		if err := json.Unmarshal(msg.Value, &engineMsg); err != nil {
 			log.Printf("failed to unmarshal message: %v", err)
 			continue

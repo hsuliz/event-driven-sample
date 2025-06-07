@@ -18,7 +18,7 @@ func NewService(producer *Producer) *Service {
 }
 
 func (s Service) Process(determinant int) error {
-	if err := s.Producer.SendMessage(kafka.EngineMessage{
+	if err := s.Producer.SendMessage(kafka.EngineMsg{
 		Done:  true,
 		Value: determinant,
 	}); err != nil {
@@ -28,7 +28,7 @@ func (s Service) Process(determinant int) error {
 }
 
 func (s Service) Calculate(matrix [][]int) (int, error) {
-	if err := s.Producer.SendMessage(kafka.EngineMessage{
+	if err := s.Producer.SendMessage(kafka.EngineMsg{
 		Done:  false,
 		Value: 0,
 	}); err != nil {

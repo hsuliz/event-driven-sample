@@ -23,7 +23,7 @@ func NewProducer(brokers []string, topic string) (*Producer, error) {
 	}, nil
 }
 
-func (p Producer) SendMessage(message kafka.EngineMessage) error {
+func (p Producer) SendMessage(message kafka.EngineMsg) error {
 	data, err := json.Marshal(message)
 	if err != nil {
 		return err
