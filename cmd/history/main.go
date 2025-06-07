@@ -9,15 +9,13 @@ import (
 func main() {
 	kafkaConfig := config.GetKafkaConfig()
 	consumer, err := history.NewConsumer(kafkaConfig.Brokers, kafkaConfig.HistoryTopic)
-	defer consumer.Close()
-
 	if err != nil {
 		log.Println(err)
 		return
 	}
+	defer consumer.Close()
 
 	if err := consumer.Listen(); err != nil {
 		log.Println(err)
-		return
 	}
 }
