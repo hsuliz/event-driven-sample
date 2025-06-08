@@ -23,13 +23,14 @@ func NewConsumer(service *Service, brokers []string, topic string) (*Consumer, e
 
 func (c Consumer) Listen() error {
 	log.Println("listening for messages...")
-	for message := range c.KafkaConsumer.Listen() {
+	for msg := range c.KafkaConsumer.Listen() {
 		var matrix [][]int
-		if err := json.Unmarshal(message.Value, &matrix); err != nil {
+		if err := json.Unmarshal(msg.Value, &matrix); err != nil {
 			log.Printf("failed to unmarshal message: %v", err)
 			continue
 		}
-		determinant, err := c.Service.Calculate(matrix)
+
+		matrixHash, determinant, err := c.Service.Calculate(matrix)
 		if err != nil {
 			log.Printf("failed to calculate message: %v", err)
 			continue
@@ -39,8 +40,9 @@ func (c Consumer) Listen() error {
 		duration := rand.Intn(10)
 		time.Sleep(time.Duration(duration) * time.Second)
 
-		if err := c.Service.Process(determinant); err != nil {
-			return err
+		if err := c.Service.Process(matrixHash, determinant); err != nil {
+			log.Printf("failed to process message: %v", err)
+			continue
 		}
 	}
 	return nil
