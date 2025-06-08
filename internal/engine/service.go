@@ -1,9 +1,8 @@
 package engine
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
 	"encoding/json"
+	"event-driven-sample/pkg/hash"
 	"event-driven-sample/pkg/kafka"
 	"fmt"
 	"gonum.org/v1/gonum/mat"
@@ -31,17 +30,13 @@ func (s Service) Process(hash string, determinant int) error {
 }
 
 func (s Service) Calculate(matrix [][]int) (string, int, error) {
-	flattenMatrixInt := slices.Concat(matrix...)
-
 	// START MONSTROSITY
+	flattenMatrixInt := slices.Concat(matrix...)
 	flattenMatrixIntMarshalled, err := json.Marshal(flattenMatrixInt)
 	if err != nil {
 		log.Fatalln(err)
 	}
-
-	matrixHashByte := sha256.Sum256(flattenMatrixIntMarshalled)
-	matrixHash := hex.EncodeToString(matrixHashByte[:])
-
+	matrixHash := hash.Encode(flattenMatrixIntMarshalled)
 	if err := s.Producer.SendMessage(kafka.EngineMsg{
 		Hash:  matrixHash,
 		Done:  false,

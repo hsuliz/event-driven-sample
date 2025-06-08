@@ -19,7 +19,7 @@ func NewConsumer(brokers []string, topic string) (*Consumer, error) {
 		return nil, fmt.Errorf("failed to create kafka consumer client: %w", err)
 	}
 
-	partitionConsumer, err := saramaConsumer.ConsumePartition(topic, 0, sarama.OffsetOldest)
+	partitionConsumer, err := saramaConsumer.ConsumePartition(topic, 0, sarama.OffsetNewest)
 	if err != nil {
 		return nil, fmt.Errorf("failed to start partition consumer: %w", err)
 	}

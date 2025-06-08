@@ -2,6 +2,7 @@ package order
 
 import (
 	"encoding/json"
+	"event-driven-sample/pkg/hash"
 	"event-driven-sample/pkg/kafka"
 	"log"
 	"time"
@@ -23,14 +24,15 @@ func NewProducer(service *Service, brokers []string, topic string) (*Producer, e
 func (p Producer) Produce(matrix int) error {
 	for {
 		matrix := p.Service.GenerateMatrix(matrix)
-		data, err := json.Marshal(matrix)
+		marshaledMatrix, err := json.Marshal(matrix)
 		if err != nil {
 			log.Fatal(err)
 		}
-		if err := p.KafkaProducer.SendMessage(data); err != nil {
+
+		log.Println("sending message:", hash.Encode(marshaledMatrix))
+		if err := p.KafkaProducer.SendMessage(marshaledMatrix); err != nil {
 			return err
 		}
-		log.Println("produced")
 		// based on kafka resources sleep can be removed
 		time.Sleep(time.Second)
 	}
