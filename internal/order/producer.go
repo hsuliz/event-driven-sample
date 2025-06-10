@@ -5,6 +5,7 @@ import (
 	"event-driven-sample/pkg/hash"
 	"event-driven-sample/pkg/kafka"
 	"log"
+	"math/rand"
 	"time"
 )
 
@@ -33,8 +34,9 @@ func (p Producer) Produce(matrix int) error {
 		if err := p.KafkaProducer.SendMessage(marshaledMatrix); err != nil {
 			return err
 		}
-		// based on kafka resources sleep can be removed
-		time.Sleep(time.Second)
+
+		duration := rand.Intn(10)
+		time.Sleep(time.Second * time.Duration(duration))
 	}
 	return nil
 }

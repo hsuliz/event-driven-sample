@@ -2,20 +2,22 @@ package history
 
 import (
 	"encoding/json"
+	"event-driven-sample/pkg/entity"
 	"event-driven-sample/pkg/kafka"
 	"log"
 )
 
 type Consumer struct {
+	Service       *Service
 	KafkaConsumer *kafka.Consumer
 }
 
-func NewConsumer(brokers []string, topic string) (*Consumer, error) {
+func NewConsumer(service *Service, brokers []string, topic string) (*Consumer, error) {
 	kafkaConsumer, err := kafka.NewConsumer(brokers, topic)
 	if err != nil {
 		return nil, err
 	}
-	return &Consumer{kafkaConsumer}, nil
+	return &Consumer{service, kafkaConsumer}, nil
 }
 
 func (c Consumer) Listen() error {
@@ -27,6 +29,14 @@ func (c Consumer) Listen() error {
 			continue
 		}
 		log.Println("got message:", engineMsg)
+
+		if err := c.Service.SaveCalculation(entity.Calculation{
+			Hash:  engineMsg.Hash,
+			Done:  engineMsg.Done,
+			Value: engineMsg.Value,
+		}); err != nil {
+			return err
+		}
 	}
 	return nil
 }
