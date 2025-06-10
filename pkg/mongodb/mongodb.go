@@ -14,9 +14,9 @@ type MongoDB struct {
 	Database string
 }
 
-func NewMongoDB(address, database, user, password string) (*MongoDB, error) {
+func New(host, database, username, password string) (*MongoDB, error) {
 	// "mongodb://username:password@localhost:27017"
-	connectionString := fmt.Sprintf("mongodb://%v:%v@%v", user, password, address)
+	connectionString := fmt.Sprintf("mongodb://%v:%v@%v", username, password, host)
 	client, err := mongo.Connect(options.Client().ApplyURI(connectionString))
 	if err != nil {
 		return nil, err

@@ -15,6 +15,7 @@ type Producer struct {
 }
 
 func NewProducer(service *Service, brokers []string, topic string) (*Producer, error) {
+
 	client, err := kafka.NewProducer(brokers, topic)
 	if err != nil {
 		return nil, err

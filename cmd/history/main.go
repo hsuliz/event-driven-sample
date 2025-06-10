@@ -1,23 +1,50 @@
 package main
 
 import (
-	"event-driven-sample/internal/config"
 	"event-driven-sample/internal/history"
 	"event-driven-sample/pkg/mongodb"
+	_ "github.com/joho/godotenv/autoload"
 	"log"
+	"os"
 )
 
 func main() {
-	repository, err := mongodb.NewMongoDB("localhost:27017", "event-driven", "username", "password")
+	dbHost, exists := os.LookupEnv("MONGODB_HOST")
+	if !exists {
+		log.Fatal("can't find MONGODB_HOST")
+	}
+	dbDatabase, exists := os.LookupEnv("MONGODB_DATABASE")
+	if !exists {
+		log.Fatal("can't find MONGODB_DATABASE")
+	}
+	dbUsername, exists := os.LookupEnv("MONGODB_USER")
+	if !exists {
+		log.Fatal("can't find MONGODB_USER")
+	}
+	dbPassword, exists := os.LookupEnv("MONGODB_PASSWORD")
+	if !exists {
+		log.Fatal("can't find MONGODB_PASSWORD")
+	}
+
+	kafkaBroker, exists := os.LookupEnv("KAFKA_BROKER")
+	if !exists {
+		log.Fatal("can't find KAFKA_BROKER")
+	}
+	kafkaEngineTopic, exists := os.LookupEnv("KAFKA_ENGINE_TOPIC")
+	if !exists {
+		log.Fatal("can't find KAFKA_ENGINE_TOPIC")
+	}
+
+	repository, err := mongodb.New(dbHost, dbDatabase, dbUsername, dbPassword)
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		return
 	}
 	defer repository.Close()
 
 	service := history.NewService(repository)
 
-	kafkaConfig := config.GetKafkaConfig()
-	consumer, err := history.NewConsumer(service, kafkaConfig.Brokers, kafkaConfig.HistoryTopic)
+	consumer, err := history.NewConsumer(service, []string{kafkaBroker}, kafkaEngineTopic)
 	if err != nil {
 		log.Println(err)
 		return
