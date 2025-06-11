@@ -6,6 +6,7 @@ import (
 	"event-driven-sample/pkg/kafka"
 	"log"
 	"math/rand"
+	"slices"
 	"time"
 )
 
@@ -30,8 +31,14 @@ func (p Producer) Produce(matrix int) error {
 		if err != nil {
 			log.Fatal(err)
 		}
+		// just for hash i dont care
+		flattenMatrixInt := slices.Concat(matrix...)
+		flattenMatrixIntMarshalled, err := json.Marshal(flattenMatrixInt)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		log.Println("sending message:", hash.Encode(flattenMatrixIntMarshalled))
 
-		log.Println("sending message:", hash.Encode(marshaledMatrix))
 		if err := p.KafkaProducer.SendMessage(marshaledMatrix); err != nil {
 			return err
 		}
