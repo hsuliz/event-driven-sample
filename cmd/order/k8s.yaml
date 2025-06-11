@@ -18,6 +18,11 @@ spec:
           image: hsuliz/event-driven-sample/order-service
           ports:
             - containerPort: 8080
+          env:
+            - name: KAFKA_BROKER
+              value: kafka:9092
+            - name: KAFKA_ORDER_TOPIC
+              value: order-topic
 ---
 apiVersion: v1
 kind: Service

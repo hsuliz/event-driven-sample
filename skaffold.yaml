@@ -7,6 +7,9 @@ build:
     - image: hsuliz/event-driven-sample/engine-service
       docker:
         dockerfile: cmd/engine/Dockerfile
+    - image: hsuliz/event-driven-sample/history-service
+      docker:
+        dockerfile: cmd/history/Dockerfile
     - image: hsuliz/event-driven-sample/order-service
       docker:
         dockerfile: cmd/order/Dockerfile
@@ -18,7 +21,13 @@ deploy:
         version: 32.2.11
         valuesFiles:
           - infrastructure/values/kafka.yaml
+      - name: mongodb
+        remoteChart: bitnami/mongodb
+        version: 16.5.20
+        valuesFiles:
+          - infrastructure/values/mongodb.yaml
 manifests:
   rawYaml:
     - cmd/engine/k8s.yaml
+    - cmd/history/k8s.yaml
     - cmd/order/k8s.yaml

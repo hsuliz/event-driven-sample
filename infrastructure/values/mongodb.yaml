@@ -1,0 +1,17 @@
+image:
+  # Bitnami charts only support bitnami container images.
+  # The bitnami/mongo images are Debian with arch linux/amd64 only (linux/arm64 is not provided)
+  # because MongoDB doesn't provide Debian ARM64 packages/binaries.
+  # However, MongoDB provided images supports arm64.
+  repository: mongo
+  tag: 6.0.12-jammy
+  pullPolicy: IfNotPresent
+extraEnvVars:
+  - name: MONGO_INITDB_ROOT_USERNAME
+    value: admin
+  - name: MONGO_INITDB_ROOT_PASSWORD
+    value: admin
+persistence:
+  mountPath: /data/db
+volumePermissions:
+  enabled: true
