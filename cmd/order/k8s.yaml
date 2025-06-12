@@ -23,6 +23,16 @@ spec:
               value: kafka:9092
             - name: KAFKA_ORDER_TOPIC
               value: order-topic
+            - name: KAFKA_ENGINE_TOPIC
+              value: engine-topic
+            - name: MONGODB_HOST
+              value: mongodb:27017
+            - name: MONGODB_DATABASE
+              value: event-driven
+            - name: MONGODB_USERNAME
+              value: admin
+            - name: MONGODB_PASSWORD
+              value: admin
 ---
 apiVersion: v1
 kind: Service

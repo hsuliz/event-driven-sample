@@ -7,9 +7,6 @@ build:
     - image: hsuliz/event-driven-sample/engine-service
       docker:
         dockerfile: cmd/engine/Dockerfile
-    - image: hsuliz/event-driven-sample/history-service
-      docker:
-        dockerfile: cmd/history/Dockerfile
     - image: hsuliz/event-driven-sample/order-service
       docker:
         dockerfile: cmd/order/Dockerfile
@@ -29,5 +26,4 @@ deploy:
 manifests:
   rawYaml:
     - cmd/engine/k8s.yaml
-    - cmd/history/k8s.yaml
     - cmd/order/k8s.yaml

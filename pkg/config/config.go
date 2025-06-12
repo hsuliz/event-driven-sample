@@ -5,35 +5,41 @@ import (
 	"os"
 )
 
-type Config struct {
-	// KAFKA
-	KafkaBroker      string
-	KafkaEngineTopic string
-	KafkaOrderTopic  string
-	// MONGODB
-	DBHost     string
-	DBDatabase string
-	DBUsername string
-	DBPassword string
+type KafkaConfig struct {
+	Broker      string
+	EngineTopic string
+	OrderTopic  string
 }
 
-func LoadConfig() *Config {
-	return &Config{
-		KafkaBroker:      getEnv("KAFKA_BROKER", "localhost:29092"),
-		KafkaEngineTopic: getEnv("KAFKA_ENGINE_TOPIC", "engine-topic"),
-		KafkaOrderTopic:  getEnv("KAFKA_ORDER_TOPIC", "order-topic"),
+type DBConfig struct {
+	Host     string
+	Database string
+	Username string
+	Password string
+}
 
-		DBHost:     getEnv("MONGODB_HOST", "localhost:27017"),
-		DBDatabase: getEnv("MONGODB_DATABASE", "event-driven"),
-		DBUsername: getEnv("MONGODB_USERNAME", "username"),
-		DBPassword: getEnv("MONGODB_PASSWORD", "password"),
+func LoadKafkaConfig() *KafkaConfig {
+	return &KafkaConfig{
+		Broker:      getEnv("KAFKA_BROKER", "localhost:29092"),
+		EngineTopic: getEnv("KAFKA_ENGINE_TOPIC", "engine-topic"),
+		OrderTopic:  getEnv("KAFKA_ORDER_TOPIC", "order-topic"),
+	}
+}
+
+func LoadDBConfig() *DBConfig {
+	return &DBConfig{
+		Host:     getEnv("MONGODB_HOST", "localhost:27017"),
+		Database: getEnv("MONGODB_DATABASE", "event-driven"),
+		Username: getEnv("MONGODB_USERNAME", "username"),
+		Password: getEnv("MONGODB_PASSWORD", "password"),
 	}
 }
 
 func getEnv(key, fallback string) string {
-	if val, exists := os.LookupEnv(key); exists {
+	val, exists := os.LookupEnv(key)
+	if !exists {
 		log.Println("can't find", key, "using fallback value", fallback)
-		return val
+		return fallback
 	}
-	return fallback
+	return val
 }

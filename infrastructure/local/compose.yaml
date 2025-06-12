@@ -1,5 +1,5 @@
 # docker-compose exec kafka kafka-topics --create --topic order-topic --partitions 1 --replication-factor 1 --if-not-exists --bootstrap-server localhost:9092
-# docker-compose exec kafka kafka-topics --create --topic history-topic --partitions 1 --replication-factor 1 --if-not-exists --bootstrap-server localhost:9092
+# docker-compose exec kafka kafka-topics --create --topic engine-topic --partitions 1 --replication-factor 1 --if-not-exists --bootstrap-server localhost:9092
 # docker-compose exec kafka kafka-console-producer --topic order-topic --bootstrap-server localhost:9092
 # docker-compose exec kafka kafka-console-consumer --topic order-topic --from-beginning --bootstrap-server localhost:9092
 services:

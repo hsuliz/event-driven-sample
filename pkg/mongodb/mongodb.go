@@ -19,7 +19,7 @@ func New(host, database, username, password string) (*MongoDB, error) {
 	connectionString := fmt.Sprintf("mongodb://%v:%v@%v", username, password, host)
 	client, err := mongo.Connect(options.Client().ApplyURI(connectionString))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to connect client DB: %w", err)
 	}
 	return &MongoDB{client, database}, nil
 }

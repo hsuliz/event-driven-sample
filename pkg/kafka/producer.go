@@ -32,7 +32,7 @@ func (p Producer) SendMessage(message []byte) error {
 		Value: sarama.ByteEncoder(message),
 	}
 	if _, _, err := p.SaramaSyncProducer.SendMessage(producerMessage); err != nil {
-		return fmt.Errorf("failed to setup producer: %w", err)
+		return fmt.Errorf("failed to send message: %w", err)
 	}
 	return nil
 }

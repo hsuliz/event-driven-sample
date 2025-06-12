@@ -7,10 +7,10 @@ import (
 )
 
 func main() {
-	cfg := config.LoadConfig()
+	kafkaCfg := config.LoadKafkaConfig()
 
-	kafkaBrokers := []string{cfg.KafkaBroker}
-	producer, err := engine.NewProducer(kafkaBrokers, cfg.KafkaEngineTopic)
+	kafkaBrokers := []string{kafkaCfg.Broker}
+	producer, err := engine.NewProducer(kafkaBrokers, kafkaCfg.EngineTopic)
 	if err != nil {
 		log.Println(err)
 		return
@@ -18,7 +18,7 @@ func main() {
 	defer producer.Close()
 
 	service := engine.NewService(producer)
-	consumer, err := engine.NewConsumer(service, kafkaBrokers, cfg.KafkaOrderTopic)
+	consumer, err := engine.NewConsumer(service, kafkaBrokers, kafkaCfg.OrderTopic)
 	if err != nil {
 		log.Println(err)
 		return
