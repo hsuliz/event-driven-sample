@@ -4,27 +4,34 @@ import (
 	"encoding/json"
 	"event-driven-sample/pkg/hash"
 	"event-driven-sample/pkg/kafka"
-	"fmt"
 	"gonum.org/v1/gonum/mat"
 	"log"
 	"slices"
 )
 
 type Service struct {
-	Producer *Producer
+	Producer *kafka.Producer
 }
 
-func NewService(producer *Producer) *Service {
+func NewService(producer *kafka.Producer) *Service {
 	return &Service{producer}
 }
 
-func (s Service) Process(hash string, determinant int) error {
-	if err := s.Producer.SendMessage(kafka.EngineMsg{
-		Hash:  hash,
-		Done:  true,
-		Value: determinant,
-	}); err != nil {
-		return fmt.Errorf("failed to send message: %v", err)
+func (s Service) Process(matrixHash string, determinant int) error {
+	msg := kafka.EngineMsg{
+		MatrixHash: matrixHash,
+		Done:       true,
+		Value:      determinant,
+	}
+
+	marshaledMsg, err := json.Marshal(msg)
+	if err != nil {
+		return err
+	}
+
+	log.Println("sending calculated matrix with hash", matrixHash)
+	if err := s.Producer.SendMessage(marshaledMsg); err != nil {
+		return err
 	}
 	return nil
 }
@@ -37,13 +44,6 @@ func (s Service) Calculate(matrix [][]int) (string, int, error) {
 		log.Fatalln(err)
 	}
 	matrixHash := hash.Encode(flattenMatrixIntMarshalled)
-	if err := s.Producer.SendMessage(kafka.EngineMsg{
-		Hash:  matrixHash,
-		Done:  false,
-		Value: 0,
-	}); err != nil {
-		return "", 0, fmt.Errorf("failed to send message: %v", err)
-	}
 
 	var flattenMatrixFloat []float64
 	if err := json.Unmarshal(flattenMatrixIntMarshalled, &flattenMatrixFloat); err != nil {

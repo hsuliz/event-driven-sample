@@ -31,7 +31,7 @@ func (c Consumer) Listen() error {
 		log.Println("got message:", engineMsg)
 
 		if err := c.Service.SaveCalculation(entity.Calculation{
-			Hash:  engineMsg.Hash,
+			Hash:  engineMsg.MatrixHash,
 			Done:  engineMsg.Done,
 			Value: engineMsg.Value,
 		}); err != nil {

@@ -3,6 +3,7 @@ package main
 import (
 	"event-driven-sample/internal/engine"
 	"event-driven-sample/pkg/config"
+	"event-driven-sample/pkg/kafka"
 	"log"
 )
 
@@ -10,7 +11,7 @@ func main() {
 	kafkaCfg := config.LoadKafkaConfig()
 
 	kafkaBrokers := []string{kafkaCfg.Broker}
-	producer, err := engine.NewProducer(kafkaBrokers, kafkaCfg.EngineTopic)
+	producer, err := kafka.NewProducer(kafkaBrokers, kafkaCfg.EngineTopic)
 	if err != nil {
 		log.Println(err)
 		return
