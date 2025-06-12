@@ -4,7 +4,6 @@ import (
 	"event-driven-sample/internal/order"
 	"event-driven-sample/pkg/config"
 	"event-driven-sample/pkg/kafka"
-	"event-driven-sample/pkg/mongodb"
 	"log"
 	"math/rand"
 	"time"
@@ -12,7 +11,7 @@ import (
 
 func main() {
 	dbCfg := config.LoadDBConfig()
-	repository, err := mongodb.New(dbCfg.Host, dbCfg.Database, dbCfg.Username, dbCfg.Password)
+	repository, err := order.NewRepository(dbCfg.Host, dbCfg.Database, dbCfg.Username, dbCfg.Password)
 	if err != nil {
 		log.Println(err)
 		return
@@ -33,7 +32,7 @@ func main() {
 		n := 3
 		for {
 			matrix := service.GenerateMatrix(n)
-			err := service.ProcessCalculation(matrix)
+			err := service.ProcessMatrix(matrix)
 			if err != nil {
 				log.Println(err)
 			}
