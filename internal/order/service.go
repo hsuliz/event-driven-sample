@@ -13,8 +13,8 @@ import (
 )
 
 type Service struct {
-	Repository    *Repository
-	KafkaProducer *kafka.Producer
+	Repository *Repository
+	Producer   *kafka.Producer
 }
 
 func NewService(repository *Repository, producer *kafka.Producer) *Service {
@@ -52,7 +52,7 @@ func (s Service) ProcessMatrix(matrix [][]int) error {
 		return fmt.Errorf("failed to save: %w", err)
 	}
 
-	if err := s.KafkaProducer.SendMessage(marshaledMatrix); err != nil {
+	if err := s.Producer.SendMessage(marshaledMatrix); err != nil {
 		return fmt.Errorf("failed to send message: %w", err)
 	}
 
@@ -83,6 +83,6 @@ func MakeMatrix(size int) [][]int {
 
 func (s Service) PopulateRow(row *[]int) {
 	for i := range *row {
-		(*row)[i] = rand.Int() % 100
+		(*row)[i] = rand.Intn(9)
 	}
 }
